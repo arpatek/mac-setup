@@ -22,6 +22,9 @@ MAC_SETUP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # ──[ Shared Utilities ]────────────────────────────────────────────────────────
 source "$MAC_SETUP_DIR/lib.sh"
 
+# ──[ Error Trap ]──────────────────────────────────────────────────────────────
+trap 'printf "\n%s Uninstall failed. Aborting.\n" "$(FAILED)"' ERR
+
 # ──[ Privileged Session Caching ]──────────────────────────────────────────────
 cache_sudo
 
