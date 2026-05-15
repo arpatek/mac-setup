@@ -36,9 +36,7 @@ brew "shfmt"
 brew "lazygit"
 brew "yazi"
 brew "asciinema"
-brew "tmate"
 brew "asciiquarium"
-brew "speedtest-cli"  # Speedtest CLI (Homebrew community client)
 
 # ──[ Network & Tunnels ]───────────────────────────────────────────────────────
 brew "cloudflared"
@@ -98,7 +96,6 @@ cask "steam"
 # ──[ System Utilities ]────────────────────────────────────────────────────────
 cask "keka"
 cask "utm"
-cask "qbittorrent"
 
 # ──[ Mac App Store ]───────────────────────────────────────────────────────────
 brew "mas"

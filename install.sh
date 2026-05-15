@@ -8,10 +8,30 @@
 # Version: 1.0
 # =============================================================================
 
-# ──[ Bash Version Check ]──────────────────────────────────────────────────────
+# ──[ Bash Bootstrap ]──────────────────────────────────────────────────────────
+# macOS ships bash 3.2 which lacks associative arrays (declare -A) required by
+# this script. Re-exec with Homebrew bash 4+ if available; install it if not.
 if ((BASH_VERSINFO[0] < 4)); then
-  printf "install.sh requires bash 4 or higher (detected: %s)\n" "$BASH_VERSION" >&2
-  printf "Install bash via Homebrew: brew install bash\n" >&2
+  for _b in /opt/homebrew/bin/bash /usr/local/bin/bash; do
+    [[ -x "$_b" ]] && exec "$_b" "$0" "$@"
+  done
+
+  printf "bash 3.x detected — installing Homebrew and bash 4+...\n"
+  if ! command -v brew >/dev/null 2>&1; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+  brew install bash
+
+  for _b in /opt/homebrew/bin/bash /usr/local/bin/bash; do
+    [[ -x "$_b" ]] && exec "$_b" "$0" "$@"
+  done
+
+  printf "install.sh: could not upgrade bash — install manually: brew install bash\n" >&2
   exit 1
 fi
 
