@@ -4,7 +4,6 @@
 # └──────────────────────────────────────────────────────────────┘
 
 # ──[ Taps ]────────────────────────────────────────────────────────────────────
-tap "ookla/speedtest-cli"
 tap "waydabber/betterdisplay"
 
 # ──[ Shell ]───────────────────────────────────────────────────────────────────
@@ -39,7 +38,7 @@ brew "yazi"
 brew "asciinema"
 brew "tmate"
 brew "asciiquarium"
-brew "speedtest"      # official Ookla Speedtest CLI
+brew "speedtest-cli"  # Speedtest CLI (Homebrew community client)
 
 # ──[ Network & Tunnels ]───────────────────────────────────────────────────────
 brew "cloudflared"
