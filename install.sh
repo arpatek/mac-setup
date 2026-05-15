@@ -218,6 +218,8 @@ link "$MAC_SETUP_DIR/.tmux.conf"                          ~/.tmux.conf
 sleep 0.2
 link "$MAC_SETUP_DIR/.vimrc"                              ~/.vimrc
 sleep 0.2
+link "$MAC_SETUP_DIR/.git-commit-template"                ~/.git-commit-template
+sleep 0.2
 link "$MAC_SETUP_DIR/.editorconfig"                       ~/.editorconfig
 sleep 0.2
 link "$MAC_SETUP_DIR/.config/zed/settings.json"           ~/.config/zed/settings.json

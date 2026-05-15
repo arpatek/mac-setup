@@ -132,6 +132,16 @@ else
       fi
     done < "$MAC_SETUP_DIR/Brewfile"
     printf "%s Brewfile packages removed\n" "$(COMPLETE)"
+    # Remove taps — only after packages are uninstalled so brew doesn't refuse
+    while IFS= read -r line; do
+      line="${line%%#*}"
+      if [[ "$line" =~ ^[[:space:]]*tap[[:space:]]+\"([^\"]+)\" ]]; then
+        brew untap "${BASH_REMATCH[1]}" 2>/dev/null \
+          && printf "%s Untapped %s\n" "$(COMPLETE)" "${BASH_REMATCH[1]}" \
+          || printf "%s Could not untap %s (may still have dependents)\n" \
+               "$(PLUS)" "${BASH_REMATCH[1]}"
+      fi
+    done < "$MAC_SETUP_DIR/Brewfile"
   else
     printf "%s Skipping package removal\n" "$(PLUS)"
   fi
@@ -188,6 +198,7 @@ unlink_file ~/.zsh/themes/arpatek.zsh-theme
 unlink_file ~/.tmux.conf
 unlink_file ~/.gitconfig
 unlink_file ~/.vimrc
+unlink_file ~/.git-commit-template
 unlink_file ~/.editorconfig
 unlink_file ~/.curlrc
 unlink_file ~/.config/lazygit/config.yml
