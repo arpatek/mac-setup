@@ -180,36 +180,47 @@ sleep 1
 
 printf "%s Symlinking Dotfiles\n" "$(BANNER)"
 sleep 0.5
+
+printf "%s Shell\n" "$(BANNER)"
+sleep 0.2
 link "$MAC_SETUP_DIR/.zshrc"                              ~/.zshrc
+sleep 0.2
+link "$MAC_SETUP_DIR/.zprofile"                           ~/.zprofile
 sleep 0.2
 link "$MAC_SETUP_DIR/.zsh_aliases"                        ~/.zsh_aliases
 sleep 0.2
 link "$MAC_SETUP_DIR/.zsh/themes/arpatek.zsh-theme"       ~/.zsh/themes/arpatek.zsh-theme
+printf "\n"
+
+printf "%s Terminal & Editor\n" "$(BANNER)"
 sleep 0.2
 link "$MAC_SETUP_DIR/.tmux.conf"                          ~/.tmux.conf
 sleep 0.2
-link "$MAC_SETUP_DIR/.gitconfig"                          ~/.gitconfig
-sleep 0.2
 link "$MAC_SETUP_DIR/.vimrc"                              ~/.vimrc
 sleep 0.2
-link "$MAC_SETUP_DIR/.zprofile"                           ~/.zprofile
-sleep 0.2
 link "$MAC_SETUP_DIR/.editorconfig"                       ~/.editorconfig
+sleep 0.2
+link "$MAC_SETUP_DIR/.config/zed/settings.json"           ~/.config/zed/settings.json
+printf "\n"
+
+printf "%s Tools & System\n" "$(BANNER)"
+sleep 0.2
+link "$MAC_SETUP_DIR/.gitconfig"                          ~/.gitconfig
 sleep 0.2
 link "$MAC_SETUP_DIR/.curlrc"                             ~/.curlrc
 sleep 0.2
 link "$MAC_SETUP_DIR/.config/lazygit/config.yml"          ~/.config/lazygit/config.yml
 sleep 0.2
-link "$MAC_SETUP_DIR/.config/zed/settings.json"           ~/.config/zed/settings.json
-sleep 0.2
 link "$MAC_SETUP_DIR/.aerospace.toml"                     ~/.aerospace.toml
+printf "\n"
+
+printf "%s iTerm2\n" "$(BANNER)"
 sleep 0.2
-# iTerm2 color scheme — copied rather than symlinked since iTerm2 imports
-# it once and stores the result internally in its own preferences
+# Copied rather than symlinked — iTerm2 imports colors internally
 mkdir -p ~/.config/iterm2
 cp "$MAC_SETUP_DIR/.config/iterm2/arpatek.itermcolors" \
    ~/.config/iterm2/arpatek.itermcolors
-printf "%s Copied iTerm2 color scheme\n" "$(COMPLETE)"
+printf "%s Copied arpatek.itermcolors\n" "$(COMPLETE)"
 printf "\n"
 sleep 1
 
