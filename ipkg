@@ -68,10 +68,10 @@ fzf_args=(
   --bind 'alt-p:toggle-preview'
   --bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
   --bind 'alt-k:preview-up,alt-j:preview-down'
-  --bind "alt-f:reload(brew formulae | sed 's|^|install-formula |')+change-prompt([INSTALL] formula > )+change-header(alt+c: install-cask | alt+r: remove-formula | alt+x: remove-cask | tab: select)+change-color(pointer:green,marker:green)"
-  --bind "alt-c:reload(brew casks | sed 's|^|install-cask |')+change-prompt([INSTALL] cask > )+change-header(alt+f: install-formula | alt+r: remove-formula | alt+x: remove-cask | tab: select)+change-color(pointer:green,marker:green)"
-  --bind "alt-r:reload(brew list --formula 2>/dev/null | sed 's|^|remove-formula |')+change-prompt([REMOVE] formula > )+change-header(alt+f: install-formula | alt+c: install-cask | alt+x: remove-cask | tab: select)+change-color(pointer:red,marker:red)"
-  --bind "alt-x:reload(brew list --cask 2>/dev/null | sed 's|^|remove-cask |')+change-prompt([REMOVE] cask > )+change-header(alt+f: install-formula | alt+c: install-cask | alt+r: remove-formula | tab: select)+change-color(pointer:red,marker:red)"
+  --bind "alt-f:reload(brew formulae | sed 's|^|install-formula |')+change-prompt([INSTALL] formula > )+change-header(alt+c: install-cask | alt+r: remove-formula | alt+x: remove-cask | tab: select)"
+  --bind "alt-c:reload(brew casks | sed 's|^|install-cask |')+change-prompt([INSTALL] cask > )+change-header(alt+f: install-formula | alt+r: remove-formula | alt+x: remove-cask | tab: select)"
+  --bind "alt-r:reload(brew list --formula 2>/dev/null | sed 's|^|remove-formula |')+change-prompt([REMOVE] formula > )+change-header(alt+f: install-formula | alt+c: install-cask | alt+x: remove-cask | tab: select)"
+  --bind "alt-x:reload(brew list --cask 2>/dev/null | sed 's|^|remove-cask |')+change-prompt([REMOVE] cask > )+change-header(alt+f: install-formula | alt+c: install-cask | alt+r: remove-formula | tab: select)"
 )
 
 selections=$(brew formulae | sed 's|^|install-formula |' | fzf "${fzf_args[@]}" || true)
