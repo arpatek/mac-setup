@@ -57,6 +57,7 @@ fi
 #   alt+d/u → scroll preview half-page
 
 fzf_args=(
+  --height 100%
   --multi
   --prompt '[INSTALL] formula > '
   --header "alt+c: install-cask | alt+r: remove-formula | alt+x: remove-cask | tab: select"
