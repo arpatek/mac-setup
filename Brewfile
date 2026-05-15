@@ -90,4 +90,6 @@ cask "steam"
 cask "keka"
 cask "utm"
 cask "qbittorrent"
-cask "wireguard"
+
+# ──[ VPN ]─────────────────────────────────────────────────────────────────────
+brew "wireguard-tools"   # wg and wg-quick CLI — pulls in wireguard-go as dependency
