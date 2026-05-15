@@ -53,7 +53,6 @@ The installer will:
 - Bootstrap zinit and LazyVim
 - Symlink all dotfiles into place
 - Install mpu to `$(brew --prefix)/bin`
-- Set Homebrew zsh as the default shell
 - Launch zsh on completion
 
 **To skip package installation** (re-link only):
@@ -68,7 +67,7 @@ The installer will:
 ./uninstall.sh
 ```
 
-Uninstalls all Brewfile packages, removes symlinks, pyenv, zinit, LazyVim, and reverts the default shell.
+Uninstalls all Brewfile packages, removes symlinks, pyenv, zinit, and LazyVim.
 
 > **Note:** After install, import the iTerm2 color scheme manually:
 > iTerm2 → Settings → Profiles → Colors → Color Presets → Import → `~/.config/iterm2/arpatek.itermcolors`
@@ -97,7 +96,7 @@ Options:
 |---|---|
 | Shell | bash, zsh, tmux |
 | Core CLI | git, curl, wget, aria2, tree, nmap, make, gcc, grep |
-| Modern CLI | bat, eza, fastfetch, btop, ncdu, fzf, zoxide, lazygit, yazi |
+| Modern CLI | bat, eza, fastfetch, btop, ncdu, fzf, zoxide, lazygit, yazi, lynx, shellcheck, shfmt, asciinema, asciiquarium |
 | Dev | go, node, deno, pyenv, docker, neovim, shellcheck, shfmt |
 | Network | cloudflared, mole, wireguard-tools |
 | Media | ffmpeg, yt-dlp |
