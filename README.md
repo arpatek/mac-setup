@@ -125,11 +125,16 @@ Hidden Bar · Codye · WireGuard · Wipr 2 · Amphetamine · CleanMyMac
 
 | Feature | Detail |
 |---|---|
-| Plugin manager | Zinit with autosuggestions, completions |
-| Syntax highlighting | `fast-syntax-highlighting` |
+| Plugin manager | Zinit with lazy loading and annexes |
+| Syntax highlighting | `fast-syntax-highlighting` — faster than zsh-syntax-highlighting |
+| Autosuggestions | History-first with completion fallback, 20-char buffer cap |
+| Completions | `zsh-completions` with 24-hour compinit dump cache |
 | Fuzzy finder | fzf — `Ctrl+R` history, `Ctrl+T` file picker, `Alt+C` fuzzy cd |
 | Smart jump | zoxide — `z <query>` jumps to most-frecent directory, `zi` interactive |
 | History | 50,000 entries, all-duplicates removed, timestamps, shared across sessions |
+| `AUTO_CD` | Type a directory name to navigate without `cd` |
+| `GLOB_DOTS` | Glob patterns include dotfiles without `.*` |
+| `NO_BEEP` | Disables terminal bell |
 
 ---
 
