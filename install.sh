@@ -203,6 +203,13 @@ sleep 0.2
 link "$MAC_SETUP_DIR/.config/zed/settings.json"           ~/.config/zed/settings.json
 sleep 0.2
 link "$MAC_SETUP_DIR/.aerospace.toml"                     ~/.aerospace.toml
+sleep 0.2
+# iTerm2 color scheme — copied rather than symlinked since iTerm2 imports
+# it once and stores the result internally in its own preferences
+mkdir -p ~/.config/iterm2
+cp "$MAC_SETUP_DIR/.config/iterm2/arpatek.itermcolors" \
+   ~/.config/iterm2/arpatek.itermcolors
+printf "%s Copied iTerm2 color scheme\n" "$(COMPLETE)"
 printf "\n"
 sleep 1
 
