@@ -3,6 +3,9 @@
 # │ Run: brew bundle                                             │
 # └──────────────────────────────────────────────────────────────┘
 
+# ──[ Taps ]────────────────────────────────────────────────────────────────────
+tap "ookla/speedtest-cli"
+
 # ──[ Shell ]───────────────────────────────────────────────────────────────────
 brew "bash"           # bash 4+ required by dotfiles scripts
 brew "zsh"
@@ -35,6 +38,7 @@ brew "yazi"
 brew "asciinema"
 brew "tmate"
 brew "asciiquarium"
+brew "speedtest"      # official Ookla Speedtest CLI
 
 # ──[ Network & Tunnels ]───────────────────────────────────────────────────────
 brew "cloudflared"
@@ -57,6 +61,9 @@ brew "yt-dlp"
 # ──[ Editors ]─────────────────────────────────────────────────────────────────
 brew "neovim"
 
+# ──[ VPN ]─────────────────────────────────────────────────────────────────────
+brew "wireguard-tools"   # wg and wg-quick CLI — pulls in wireguard-go as dependency
+
 # ──[ Fonts ]───────────────────────────────────────────────────────────────────
 cask "font-jetbrains-mono-nerd-font"
 
@@ -66,10 +73,12 @@ cask "iterm2"
 # ──[ Browsers ]────────────────────────────────────────────────────────────────
 cask "firefox"
 cask "zen"
+cask "helium-browser"
 
 # ──[ Editors & IDEs ]──────────────────────────────────────────────────────────
 cask "visual-studio-code"
 cask "zed"
+cask "betterdisplay"
 
 # ──[ AI Tools ]────────────────────────────────────────────────────────────────
 cask "claude"
@@ -91,5 +100,6 @@ cask "keka"
 cask "utm"
 cask "qbittorrent"
 
-# ──[ VPN ]─────────────────────────────────────────────────────────────────────
-brew "wireguard-tools"   # wg and wg-quick CLI — pulls in wireguard-go as dependency
+# ──[ Mac App Store ]───────────────────────────────────────────────────────────
+brew "mas"
+# mas entries added below — paste content of ~/mas_apps
