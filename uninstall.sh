@@ -105,21 +105,36 @@ printf "%s Starting macOS Dotfiles Uninstall\n" "$(BANNER)"
 sleep 1
 
 # ── Homebrew packages ─────────────────────────────────────────────────────────
+# brew bundle cleanup removes things NOT in the Brewfile — the opposite of what
+# an uninstaller needs. Instead, parse the Brewfile and uninstall each entry.
 printf "%s Homebrew Package Removal\n" "$(BANNER)"
 sleep 0.5
-if command -v brew >/dev/null 2>&1; then
-  printf "%s The following packages would be removed:\n" "$(PLUS)"
-  brew bundle cleanup --file="$MAC_SETUP_DIR/Brewfile" 2>/dev/null || true
-  printf "\n"
-  if confirm "Remove all Brewfile packages listed above?"; then
-    brew bundle cleanup --force --file="$MAC_SETUP_DIR/Brewfile" \
-      && printf "%s Brewfile packages removed\n" "$(COMPLETE)" \
-      || warn "brew bundle cleanup had errors"
+if ! command -v brew >/dev/null 2>&1; then
+  printf "%s Homebrew not found, skipping\n" "$(PLUS)"
+else
+  if confirm "Uninstall all packages listed in the Brewfile?"; then
+    while IFS= read -r line; do
+      # Strip inline comments
+      line="${line%%#*}"
+      if [[ "$line" =~ ^[[:space:]]*brew[[:space:]]+\"([^\"]+)\" ]]; then
+        pkg="${BASH_REMATCH[1]}"
+        brew uninstall --formula --force "$pkg" 2>/dev/null \
+          && printf "%s Removed formula: %s\n" "$(COMPLETE)" "$pkg" \
+          || printf "%s Skipped (not installed): %s\n" "$(PLUS)" "$pkg"
+      elif [[ "$line" =~ ^[[:space:]]*cask[[:space:]]+\"([^\"]+)\" ]]; then
+        pkg="${BASH_REMATCH[1]}"
+        brew uninstall --cask --force "$pkg" 2>/dev/null \
+          && printf "%s Removed cask: %s\n" "$(COMPLETE)" "$pkg" \
+          || printf "%s Skipped (not installed): %s\n" "$(PLUS)" "$pkg"
+      elif [[ "$line" =~ ^[[:space:]]*mas[[:space:]] ]]; then
+        printf "%s mas apps must be removed manually via the App Store\n" "$(PLUS)"
+        break
+      fi
+    done < "$MAC_SETUP_DIR/Brewfile"
+    printf "%s Brewfile packages removed\n" "$(COMPLETE)"
   else
     printf "%s Skipping package removal\n" "$(PLUS)"
   fi
-else
-  printf "%s Homebrew not found, skipping package removal\n" "$(PLUS)"
 fi
 printf "\n"
 sleep 1
