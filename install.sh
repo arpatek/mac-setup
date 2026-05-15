@@ -1,0 +1,238 @@
+#!/usr/bin/env bash
+# =============================================================================
+# Script Name: install.sh
+# Description: macOS dotfiles installer — bootstraps Homebrew, installs
+#              packages via Brewfile, and symlinks dotfiles into place.
+# Author: Juan Garcia (arpatek)
+# Created: 2026-05-15
+# Version: 1.0
+# =============================================================================
+
+# ──[ Bash Version Check ]──────────────────────────────────────────────────────
+if ((BASH_VERSINFO[0] < 4)); then
+  printf "install.sh requires bash 4 or higher (detected: %s)\n" "$BASH_VERSION" >&2
+  printf "Install bash via Homebrew: brew install bash\n" >&2
+  exit 1
+fi
+
+set -eo pipefail
+
+# ──[ Paths ]───────────────────────────────────────────────────────────────────
+MAC_SETUP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+
+# ──[ Shared Utilities ]────────────────────────────────────────────────────────
+source "$MAC_SETUP_DIR/lib.sh"
+
+# ──[ Error Trap ]──────────────────────────────────────────────────────────────
+trap 'printf "\n%s Installation failed. Aborting.\n" "$(FAILED)"' ERR
+
+# ──[ Argument Parsing ]────────────────────────────────────────────────────────
+SKIP_PACKAGES=false
+
+usage() {
+  printf "Usage: install.sh [OPTIONS]\n"
+  printf "Options:\n"
+  printf "  -h, --help            Show this help message\n"
+  printf "  --skip-packages       Skip Homebrew bootstrap (symlinks only)\n"
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  --skip-packages) SKIP_PACKAGES=true ;;
+  *)
+    printf "Unknown option: %s\n" "$1" >&2
+    usage >&2
+    exit 1
+    ;;
+  esac
+  shift
+done
+
+# ──[ Privileged Session Caching ]──────────────────────────────────────────────
+cache_sudo
+
+# ──[ Backup Function ]─────────────────────────────────────────────────────────
+backup() {
+  local target="$1"
+  if [[ -e "$target" && ! -L "$target" ]]; then
+    mkdir -p "$BACKUP_DIR"
+    cp -r "$target" "$BACKUP_DIR/"
+    printf "%s Backed up %s\n" "$(PLUS)" "$target"
+  fi
+}
+
+# ──[ Symlink Function ]────────────────────────────────────────────────────────
+link() {
+  local src="$1"
+  local dst="$2"
+  backup "$dst"
+  ln -sf "$src" "$dst"
+  printf "%s Linked %s\n" "$(COMPLETE)" "$dst"
+}
+
+# ──[ Package Bootstrap ]───────────────────────────────────────────────────────
+bootstrap_xcode() {
+  if xcode-select -p &>/dev/null; then
+    printf "%s Xcode Command Line Tools already installed\n" "$(COMPLETE)"
+    return
+  fi
+  printf "%s Installing Xcode Command Line Tools...\n" "$(PLUS)"
+  xcode-select --install
+  # Block until the install completes
+  until xcode-select -p &>/dev/null; do sleep 5; done
+  printf "%s Xcode Command Line Tools installed\n" "$(COMPLETE)"
+}
+
+bootstrap_homebrew() {
+  if command -v brew >/dev/null 2>&1; then
+    printf "%s Homebrew already installed\n" "$(COMPLETE)"
+    return
+  fi
+  printf "%s Installing Homebrew...\n" "$(PLUS)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Add Homebrew to PATH for the remainder of this script
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+  printf "%s Homebrew installed\n" "$(COMPLETE)"
+}
+
+bootstrap_packages() {
+  printf "%s Installing packages from Brewfile...\n" "$(PLUS)"
+  brew bundle --file="$MAC_SETUP_DIR/Brewfile"
+  printf "%s Brewfile packages installed\n" "$(COMPLETE)"
+}
+
+bootstrap_zinit() {
+  if [[ -f "$HOME/.local/share/zinit/zinit.git/zinit.zsh" ]]; then
+    printf "%s zinit already installed\n" "$(COMPLETE)"
+    return
+  fi
+  printf "%s Installing zinit...\n" "$(PLUS)"
+  # NO_INPUT=1 suppresses the post-install prompt about annexes — they are
+  # already declared in .zshrc so there is nothing extra to set up
+  NO_INPUT=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
+  printf "%s zinit installed\n" "$(COMPLETE)"
+}
+
+bootstrap_lazyvim() {
+  if ! command -v nvim >/dev/null 2>&1; then
+    printf "%s nvim not found — skipping LazyVim install\n" "$(PLUS)"
+    return
+  fi
+
+  local nvim_ver nvim_minor
+  nvim_ver=$(nvim --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+  nvim_minor=${nvim_ver##*.}
+
+  if (( ${nvim_ver%%.*} == 0 && nvim_minor < 9 )); then
+    printf "%s nvim %s < 0.9 — linking init.vim fallback\n" "$(PLUS)" "$nvim_ver"
+    mkdir -p "$HOME/.config/nvim"
+    link "$MAC_SETUP_DIR/.config/nvim/init.vim" "$HOME/.config/nvim/init.vim"
+    return
+  fi
+
+  if [[ -d "$HOME/.config/nvim" && -n "$(ls -A "$HOME/.config/nvim" 2>/dev/null)" ]]; then
+    printf "%s ~/.config/nvim already populated — skipping LazyVim install\n" "$(PLUS)"
+    return
+  fi
+
+  printf "%s Installing LazyVim starter...\n" "$(PLUS)"
+  if git clone --depth 1 https://github.com/LazyVim/starter "$HOME/.config/nvim" 2>/dev/null; then
+    rm -rf "$HOME/.config/nvim/.git"
+    printf "%s LazyVim installed — open nvim to complete plugin setup\n" "$(COMPLETE)"
+  else
+    printf "%s LazyVim clone failed — linking init.vim fallback\n" "$(PLUS)"
+    link "$MAC_SETUP_DIR/.config/nvim/init.vim" "$HOME/.config/nvim/init.vim"
+  fi
+}
+
+# ──[ Installation ]────────────────────────────────────────────────────────────
+printf "%s Starting macOS Dotfiles Installation\n" "$(BANNER)"
+sleep 1
+
+if ! $SKIP_PACKAGES; then
+  printf "%s Bootstrapping Dependencies\n" "$(BANNER)"
+  sleep 0.5
+  bootstrap_xcode
+  bootstrap_homebrew
+  bootstrap_packages
+  bootstrap_zinit
+  bootstrap_lazyvim
+  printf "\n"
+fi
+
+printf "%s Creating Directories\n" "$(BANNER)"
+sleep 0.5
+mkdir -p ~/.zsh/themes
+mkdir -p ~/.config/lazygit
+mkdir -p ~/.ssh/
+printf "%s Directories ready\n\n" "$(COMPLETE)"
+sleep 1
+
+printf "%s Symlinking Dotfiles\n" "$(BANNER)"
+sleep 0.5
+link "$MAC_SETUP_DIR/.zshrc"                              ~/.zshrc
+sleep 0.2
+link "$MAC_SETUP_DIR/.zsh_aliases"                        ~/.zsh_aliases
+sleep 0.2
+link "$MAC_SETUP_DIR/.zsh/themes/arpatek.zsh-theme"       ~/.zsh/themes/arpatek.zsh-theme
+sleep 0.2
+link "$MAC_SETUP_DIR/.tmux.conf"                          ~/.tmux.conf
+sleep 0.2
+link "$MAC_SETUP_DIR/.gitconfig"                          ~/.gitconfig
+sleep 0.2
+link "$MAC_SETUP_DIR/.vimrc"                              ~/.vimrc
+sleep 0.2
+link "$MAC_SETUP_DIR/.zprofile"                           ~/.zprofile
+sleep 0.2
+link "$MAC_SETUP_DIR/.editorconfig"                       ~/.editorconfig
+sleep 0.2
+link "$MAC_SETUP_DIR/.curlrc"                             ~/.curlrc
+sleep 0.2
+link "$MAC_SETUP_DIR/.config/lazygit/config.yml"          ~/.config/lazygit/config.yml
+printf "\n"
+sleep 1
+
+printf "%s Installing SSH Config\n" "$(BANNER)"
+sleep 0.5
+backup ~/.ssh/config
+cp "$MAC_SETUP_DIR/.ssh/config" ~/.ssh/config
+chmod 600 ~/.ssh/config
+printf "%s SSH config installed\n\n" "$(COMPLETE)"
+sleep 1
+
+printf "%s Installing upu\n" "$(BANNER)"
+sleep 0.5
+# Homebrew manages /usr/local/bin on Intel; /opt/homebrew/bin on Apple Silicon
+UPU_DEST="$(brew --prefix)/bin/upu"
+ln -sf "$MAC_SETUP_DIR/upu" "$UPU_DEST"
+printf "%s upu installed to %s\n\n" "$(COMPLETE)" "$UPU_DEST"
+sleep 1
+
+# ──[ Default Shell ]───────────────────────────────────────────────────────────
+ZSH_BIN="$(brew --prefix)/bin/zsh"
+if [[ -n "$ZSH_BIN" && "$SHELL" != "$ZSH_BIN" ]]; then
+  printf "%s Setting zsh as default shell\n" "$(BANNER)"
+  sleep 0.5
+  if ! grep -qx "$ZSH_BIN" /etc/shells; then
+    printf "%s\n" "$ZSH_BIN" | sudo tee -a /etc/shells >/dev/null
+  fi
+  sudo chsh -s "$ZSH_BIN" "$USER"
+  printf "%s Default shell set to %s\n\n" "$(COMPLETE)" "$ZSH_BIN"
+else
+  printf "%s zsh is already the default shell\n\n" "$(COMPLETE)"
+fi
+sleep 1
+
+printf "%s Installation Complete\n" "$(COMPLETE)"
+[[ -d "$BACKUP_DIR" ]] && printf "%s Backups saved to %s\n" "$(PLUS)" "$BACKUP_DIR"
+printf "%s Deployment complete. Entering the shell.\n" "$(LAMBDA)"
+exec zsh
