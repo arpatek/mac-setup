@@ -5,6 +5,7 @@
 
 # ──[ Taps ]────────────────────────────────────────────────────────────────────
 tap "ookla/speedtest-cli"
+tap "waydabber/betterdisplay"
 
 # ──[ Shell ]───────────────────────────────────────────────────────────────────
 brew "bash"           # bash 4+ required by dotfiles scripts
@@ -102,4 +103,9 @@ cask "qbittorrent"
 
 # ──[ Mac App Store ]───────────────────────────────────────────────────────────
 brew "mas"
-# mas entries added below — paste content of ~/mas_apps
+mas "Hidden Bar",   id: 1452453066
+mas "Codye",        id: 1516894961
+mas "WireGuard",    id: 1451685025
+mas "Wipr 2",       id: 1662217862
+mas "Amphetamine",  id: 937984704
+mas "CleanMyMac",   id: 1339170533
