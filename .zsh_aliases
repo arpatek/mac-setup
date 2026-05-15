@@ -1,0 +1,55 @@
+# ┌──────────────────────────────────────────────────────────────┐
+# │ arpatek - Zsh Aliases (macOS)                                │
+# └──────────────────────────────────────────────────────────────┘
+
+
+# ──[ Basic Quality-of-Life Aliases ]──────────────────────────────────────────
+alias la='eza -A --icons --git'                 # Show hidden files (except . and ..)
+alias l='eza -F --icons'                        # Column view with classification symbols
+alias ll='eza -lagh --icons --git'              # Long listing, human-readable, icons, git status
+alias lll='eza -lagShi --icons --git'           # Sort by size, human-readable, icons, git status
+alias ltree='eza -T --level=5 --icons --git'    # Recursive tree view, icons, git info
+
+# ──[ Core Overrides ]─────────────────────────────────────────────────────────
+alias grep='grep --color=auto'
+alias diff='diff --color'
+alias mkdir='mkdir -pv'
+
+# ──[ Navigation ]─────────────────────────────────────────────────────────────
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# ──[ Git Shortcuts ]──────────────────────────────────────────────────────────
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git pull'
+alias gd='git diff'
+alias gco='git checkout'
+
+# ──[ Shell Config Access ]────────────────────────────────────────────────────
+alias zshconfig='nvim ~/.zshrc'
+alias aliases='nvim ~/.zsh_aliases'
+
+# ──[ Networking & Tools ]─────────────────────────────────────────────────────
+alias ports='lsof -i -P -n'
+alias ipinfo='ipconfig getifaddr en0'
+alias pingg='ping 8.8.8.8'
+
+# ──[ macOS Utilities ]────────────────────────────────────────────────────────
+alias flushdns='sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder'
+alias showfiles='defaults write com.apple.finder AppleShowAllFiles YES && killall Finder'
+alias hidefiles='defaults write com.apple.finder AppleShowAllFiles NO && killall Finder'
+alias pubkey='cat ~/.ssh/*.pub | pbcopy && printf "SSH public key copied to clipboard\n"'
+
+# ──[ System & Updates ]───────────────────────────────────────────────────────
+alias reboot='sudo reboot'
+alias shutdown='sudo shutdown -h now'
+alias reload='exec zsh'
+
+# ──[ SSH Shortcuts ]──────────────────────────────────────────────────────────
+alias pi='ssh netrunner'
+alias rhel='ssh rhel-0'
+alias dev='ssh ubuntu-0'
