@@ -146,7 +146,7 @@ sleep 1
 printf "%s Removing upu\n" "$(BANNER)"
 sleep 0.5
 if command -v brew >/dev/null 2>&1; then
-  remove_file "$(brew --prefix)/bin/upu"
+  remove_file "$(brew --prefix)/bin/mpu"
 fi
 printf "\n"
 

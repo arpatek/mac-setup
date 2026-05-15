@@ -209,12 +209,12 @@ chmod 600 ~/.ssh/config
 printf "%s SSH config installed\n\n" "$(COMPLETE)"
 sleep 1
 
-printf "%s Installing upu\n" "$(BANNER)"
+printf "%s Installing mpu\n" "$(BANNER)"
 sleep 0.5
 # Homebrew manages /usr/local/bin on Intel; /opt/homebrew/bin on Apple Silicon
-UPU_DEST="$(brew --prefix)/bin/upu"
-ln -sf "$MAC_SETUP_DIR/upu" "$UPU_DEST"
-printf "%s upu installed to %s\n\n" "$(COMPLETE)" "$UPU_DEST"
+MPU_DEST="$(brew --prefix)/bin/mpu"
+ln -sf "$MAC_SETUP_DIR/mpu" "$MPU_DEST"
+printf "%s mpu installed to %s\n\n" "$(COMPLETE)" "$MPU_DEST"
 sleep 1
 
 # ──[ Default Shell ]───────────────────────────────────────────────────────────
