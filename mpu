@@ -20,7 +20,7 @@ set -eo pipefail
 # macOS ships BSD readlink which lacks -f; use Python as a portable fallback
 _resolve_path() {
   python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$1" \
-    2>/dev/null || readlink -f "$1" 2>/dev/null || echo "$1"
+    2>/dev/null || readlink -f "$1" 2>/dev/null || printf '%s\n' "$1"
 }
 DOTFILES_DIR="$(cd "$(dirname "$(_resolve_path "${BASH_SOURCE[0]}")")" && pwd)"
 
