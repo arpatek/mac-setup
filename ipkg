@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# =============================================================================
+# Script Name: ipkg
+# Description: Interactive Homebrew browser — fuzzy-find and install formulae
+#              or casks using fzf. alt+c: switch to casks, alt+f: formulae.
+# Author: Juan Garcia (arpatek)
+# Created: 2026-05-15
+# Version: 1.0
+# =============================================================================
+
+# ──[ Bash Version Check ]──────────────────────────────────────────────────────
+if ((BASH_VERSINFO[0] < 4)); then
+  printf "ipkg requires bash 4 or higher (detected: %s)\n" "$BASH_VERSION" >&2
+  exit 1
+fi
+
+set -eo pipefail
+
+# ──[ Paths ]───────────────────────────────────────────────────────────────────
+_resolve_path() {
+  python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$1" \
+    2>/dev/null || readlink -f "$1" 2>/dev/null || echo "$1"
+}
+MAC_SETUP_DIR="$(cd "$(dirname "$(_resolve_path "${BASH_SOURCE[0]}")")" && pwd)"
+
+# ──[ Shared Utilities ]────────────────────────────────────────────────────────
+source "$MAC_SETUP_DIR/lib.sh"
+
+# ──[ Dependency Check ]────────────────────────────────────────────────────────
+if ! command -v fzf >/dev/null 2>&1; then
+  printf "%s fzf is required: brew install fzf\n" "$(FAILED)" >&2
+  exit 1
+fi
+
+if ! command -v brew >/dev/null 2>&1; then
+  printf "%s Homebrew not found\n" "$(FAILED)" >&2
+  exit 1
+fi
+
+# ──[ Interactive Browser ]─────────────────────────────────────────────────────
+# Entries are prefixed with their type (formula/cask) so the install step
+# knows which brew flag to use. The preview uses {2} (the name after the prefix).
+# alt+c reloads with casks, alt+f reloads with formulae — switching clears
+# current selections, so run ipkg again if you need both types.
+
+fzf_args=(
+  --multi
+  --header "[formulae] alt+c: casks  alt+f: formulae  tab: multi-select  enter: install"
+  --preview 'brew info {2} 2>/dev/null'
+  --preview-label " Brew Info "
+  --preview-label-pos 'bottom'
+  --preview-window 'down:60%:wrap'
+  --bind 'alt-p:toggle-preview'
+  --bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
+  --bind 'alt-k:preview-up,alt-j:preview-down'
+  --color 'pointer:green,marker:green'
+  --bind "alt-c:reload(brew casks | sed 's|^|cask |')+change-header([casks] alt+f: formulae  tab: multi-select  enter: install)"
+  --bind "alt-f:reload(brew formulae | sed 's|^|formula |')+change-header([formulae] alt+c: casks  tab: multi-select  enter: install)"
+)
+
+selections=$(brew formulae | sed 's|^|formula |' | fzf "${fzf_args[@]}" || true)
+
+[[ -z "$selections" ]] && exit 0
+
+# ──[ Install ]─────────────────────────────────────────────────────────────────
+printf "%s Installing selections...\n" "$(BANNER)"
+
+while IFS=' ' read -r type name; do
+  [[ -z "$name" ]] && continue
+  printf "%s %s (%s)\n" "$(PLUS)" "$name" "$type"
+  case "$type" in
+    formula) brew install "$name" ;;
+    cask)    brew install --cask "$name" ;;
+  esac
+done <<< "$selections"
+
+printf "%s Done\n" "$(COMPLETE)"

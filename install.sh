@@ -262,6 +262,13 @@ ln -sf "$MAC_SETUP_DIR/mpu" "$MPU_DEST"
 printf "%s mpu installed to %s\n\n" "$(COMPLETE)" "$MPU_DEST"
 sleep 1
 
+printf "%s Installing ipkg\n" "$(BANNER)"
+sleep 0.5
+IPKG_DEST="$(brew --prefix)/bin/ipkg"
+ln -sf "$MAC_SETUP_DIR/ipkg" "$IPKG_DEST"
+printf "%s ipkg installed to %s\n\n" "$(COMPLETE)" "$IPKG_DEST"
+sleep 1
+
 printf "%s Installation Complete\n" "$(COMPLETE)"
 [[ -d "$BACKUP_DIR" ]] && printf "%s Backups saved to %s\n" "$(PLUS)" "$BACKUP_DIR"
 printf "%s Deployment complete. Entering the shell.\n" "$(LAMBDA)"

@@ -177,11 +177,12 @@ remove_dir "$HOME/.zinit"             "~/.zinit (legacy location)"
 printf "\n"
 sleep 1
 
-# ── mpu ───────────────────────────────────────────────────────────────────────
-printf "%s Removing mpu\n" "$(BANNER)"
+# ── mpu / ipkg ────────────────────────────────────────────────────────────────
+printf "%s Removing mpu and ipkg\n" "$(BANNER)"
 sleep 0.5
 if command -v brew >/dev/null 2>&1; then
   remove_file "$(brew --prefix)/bin/mpu"
+  remove_file "$(brew --prefix)/bin/ipkg"
 fi
 printf "\n"
 
