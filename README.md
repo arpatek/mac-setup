@@ -151,6 +151,7 @@ Hidden Bar · Codye · WireGuard · Wipr 2 · Amphetamine · CleanMyMac
 | `showfiles` / `hidefiles` | Toggle hidden files in Finder |
 | `pubkey` | Copy SSH public key to clipboard via pbcopy |
 | `ipinfo` | `ipconfig getifaddr en0` |
+| `ssh` | Wraps ssh with `TERM=xterm-256color` to fix Ghostty terminfo errors on remotes |
 | `pi` / `rhel` / `dev` | SSH into configured hosts |
 | `reload` | `exec zsh` |
 
