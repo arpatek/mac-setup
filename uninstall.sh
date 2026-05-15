@@ -178,6 +178,8 @@ unlink_file ~/.vimrc
 unlink_file ~/.editorconfig
 unlink_file ~/.curlrc
 unlink_file ~/.config/lazygit/config.yml
+unlink_file ~/.config/zed/settings.json
+unlink_file ~/.aerospace.toml
 unlink_file ~/.zsh_aliases
 unlink_file ~/.zprofile
 unlink_file ~/.zshrc

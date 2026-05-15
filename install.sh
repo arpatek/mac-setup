@@ -173,6 +173,7 @@ printf "%s Creating Directories\n" "$(BANNER)"
 sleep 0.5
 mkdir -p ~/.zsh/themes
 mkdir -p ~/.config/lazygit
+mkdir -p ~/.config/zed
 mkdir -p ~/.ssh/
 printf "%s Directories ready\n\n" "$(COMPLETE)"
 sleep 1
@@ -198,6 +199,10 @@ sleep 0.2
 link "$MAC_SETUP_DIR/.curlrc"                             ~/.curlrc
 sleep 0.2
 link "$MAC_SETUP_DIR/.config/lazygit/config.yml"          ~/.config/lazygit/config.yml
+sleep 0.2
+link "$MAC_SETUP_DIR/.config/zed/settings.json"           ~/.config/zed/settings.json
+sleep 0.2
+link "$MAC_SETUP_DIR/.aerospace.toml"                     ~/.aerospace.toml
 printf "\n"
 sleep 1
 
