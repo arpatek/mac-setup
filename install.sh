@@ -260,21 +260,6 @@ ln -sf "$MAC_SETUP_DIR/mpu" "$MPU_DEST"
 printf "%s mpu installed to %s\n\n" "$(COMPLETE)" "$MPU_DEST"
 sleep 1
 
-# ──[ Default Shell ]───────────────────────────────────────────────────────────
-ZSH_BIN="$(brew --prefix)/bin/zsh"
-if [[ -n "$ZSH_BIN" && "$SHELL" != "$ZSH_BIN" ]]; then
-  printf "%s Setting zsh as default shell\n" "$(BANNER)"
-  sleep 0.5
-  if ! grep -qx "$ZSH_BIN" /etc/shells; then
-    printf "%s\n" "$ZSH_BIN" | sudo tee -a /etc/shells >/dev/null
-  fi
-  sudo chsh -s "$ZSH_BIN" "$USER"
-  printf "%s Default shell set to %s\n\n" "$(COMPLETE)" "$ZSH_BIN"
-else
-  printf "%s zsh is already the default shell\n\n" "$(COMPLETE)"
-fi
-sleep 1
-
 printf "%s Installation Complete\n" "$(COMPLETE)"
 [[ -d "$BACKUP_DIR" ]] && printf "%s Backups saved to %s\n" "$(PLUS)" "$BACKUP_DIR"
 printf "%s Deployment complete. Entering the shell.\n" "$(LAMBDA)"

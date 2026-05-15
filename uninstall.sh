@@ -181,18 +181,6 @@ sleep 0.5
 remove_file ~/.ssh/config
 printf "\n"
 
-# ── Default shell — revert before dotfiles are removed ───────────────────────
-printf "%s Reverting default shell to zsh (system)\n" "$(BANNER)"
-sleep 0.5
-SYSTEM_ZSH="/bin/zsh"
-if [[ -n "$SYSTEM_ZSH" && "$SHELL" != "$SYSTEM_ZSH" ]]; then
-  sudo chsh -s "$SYSTEM_ZSH" "$USER" \
-    && printf "%s Default shell reverted to %s\n\n" "$(COMPLETE)" "$SYSTEM_ZSH" \
-    || warn "chsh failed — revert shell manually: sudo chsh -s $SYSTEM_ZSH $USER"
-else
-  printf "%s Already using system zsh, skipping\n\n" "$(PLUS)"
-fi
-
 # ── Dotfile symlinks — last so PATH stays intact throughout ──────────────────
 printf "%s Removing Dotfile Symlinks\n" "$(BANNER)"
 sleep 0.5
