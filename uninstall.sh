@@ -105,12 +105,19 @@ printf "%s Starting macOS Dotfiles Uninstall\n" "$(BANNER)"
 sleep 1
 
 # ── Homebrew packages ─────────────────────────────────────────────────────────
-printf "%s Removing Homebrew packages\n" "$(BANNER)"
+printf "%s Homebrew Package Removal\n" "$(BANNER)"
 sleep 0.5
 if command -v brew >/dev/null 2>&1; then
-  brew bundle cleanup --force --file="$MAC_SETUP_DIR/Brewfile" \
-    && printf "%s Brewfile packages removed\n" "$(COMPLETE)" \
-    || warn "brew bundle cleanup had errors"
+  printf "%s The following packages would be removed:\n" "$(PLUS)"
+  brew bundle cleanup --file="$MAC_SETUP_DIR/Brewfile" 2>/dev/null || true
+  printf "\n"
+  if confirm "Remove all Brewfile packages listed above?"; then
+    brew bundle cleanup --force --file="$MAC_SETUP_DIR/Brewfile" \
+      && printf "%s Brewfile packages removed\n" "$(COMPLETE)" \
+      || warn "brew bundle cleanup had errors"
+  else
+    printf "%s Skipping package removal\n" "$(PLUS)"
+  fi
 else
   printf "%s Homebrew not found, skipping package removal\n" "$(PLUS)"
 fi
@@ -138,12 +145,15 @@ sleep 1
 # ── zinit ─────────────────────────────────────────────────────────────────────
 printf "%s Removing zinit\n" "$(BANNER)"
 sleep 0.5
+# Remove both possible install locations — new installs use ~/.local/share/zinit,
+# older installs may still be at ~/.zinit
 remove_dir "$HOME/.local/share/zinit" "~/.local/share/zinit"
+remove_dir "$HOME/.zinit"             "~/.zinit (legacy location)"
 printf "\n"
 sleep 1
 
-# ── upu ───────────────────────────────────────────────────────────────────────
-printf "%s Removing upu\n" "$(BANNER)"
+# ── mpu ───────────────────────────────────────────────────────────────────────
+printf "%s Removing mpu\n" "$(BANNER)"
 sleep 0.5
 if command -v brew >/dev/null 2>&1; then
   remove_file "$(brew --prefix)/bin/mpu"
@@ -180,6 +190,7 @@ unlink_file ~/.curlrc
 unlink_file ~/.config/lazygit/config.yml
 unlink_file ~/.config/zed/settings.json
 unlink_file ~/.aerospace.toml
+remove_file "$HOME/.config/iterm2/arpatek.itermcolors"
 unlink_file ~/.zsh_aliases
 unlink_file ~/.zprofile
 unlink_file ~/.zshrc
