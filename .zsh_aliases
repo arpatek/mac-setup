@@ -14,7 +14,8 @@ alias ltree='eza -T --level=5 --icons --git'    # Recursive tree view, icons, gi
 alias grep='ggrep --color=auto'   # GNU grep — supports -P Perl regex unlike BSD grep
 alias diff='diff --color'
 alias mkdir='mkdir -pv'
-alias cat='bat --plain'           # bat with no line numbers for drop-in cat feel
+alias cat='bat --plain'           # drop-in cat replacement — no decorations
+alias bcat='bat'                  # full bat with line numbers, syntax highlighting, and pager
 
 # ──[ Navigation ]─────────────────────────────────────────────────────────────
 alias ..='cd ..'
