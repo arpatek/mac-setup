@@ -11,9 +11,10 @@ alias lll='eza -lagShi --icons --git'           # Sort by size, human-readable, 
 alias ltree='eza -T --level=5 --icons --git'    # Recursive tree view, icons, git info
 
 # ──[ Core Overrides ]─────────────────────────────────────────────────────────
-alias grep='grep --color=auto'
+alias grep='ggrep --color=auto'   # GNU grep — supports -P Perl regex unlike BSD grep
 alias diff='diff --color'
 alias mkdir='mkdir -pv'
+alias cat='bat --plain'           # bat with no line numbers for drop-in cat feel
 
 # ──[ Navigation ]─────────────────────────────────────────────────────────────
 alias ..='cd ..'
