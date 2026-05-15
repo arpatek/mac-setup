@@ -14,7 +14,7 @@ Personal macOS dotfiles and bootstrap installer — installs all tools via Homeb
 | `install.sh` | Full bootstrap — Homebrew, Brewfile, zinit, LazyVim, symlinks |
 | `uninstall.sh` | Full cleanup — removes all packages, symlinks, and environments |
 | `mpu` | Mac Package Updater — updates Homebrew formulae, casks, and cleans up |
-| `ipkg` | Interactive Homebrew browser — fuzzy-find and install formulae or casks |
+| `ipkg` | Interactive Homebrew browser — fuzzy-find to install or remove formulae and casks |
 | `Brewfile` | Declarative package list for all formulae, casks, and App Store apps |
 | `.zshrc` | Zsh config — Zinit, fzf, zoxide, pyenv, Go, plugins |
 | `.zprofile` | Login shell env — Homebrew PATH, pyenv, Go |
@@ -153,6 +153,21 @@ Hidden Bar · Codye · WireGuard · Wipr 2 · Amphetamine · CleanMyMac
 | `ipinfo` | `ipconfig getifaddr en0` |
 | `pi` / `rhel` / `dev` | SSH into configured hosts |
 | `reload` | `exec zsh` |
+
+---
+
+## ipkg — Interactive Homebrew Browser
+
+| Key | Action |
+|---|---|
+| `alt+f` | Install formulae (default, green markers) |
+| `alt+c` | Install casks (green markers) |
+| `alt+r` | Remove installed formulae (red markers) |
+| `alt+x` | Remove installed casks (red markers) |
+| `Tab` | Multi-select |
+| `alt+p` | Toggle preview panel |
+| `alt+j` / `alt+k` | Scroll preview line by line |
+| `alt+d` / `alt+u` | Scroll preview half-page |
 
 ---
 
