@@ -32,8 +32,8 @@ alias gd='git diff'
 alias gco='git checkout'
 
 # ──[ Shell Config Access ]────────────────────────────────────────────────────
-alias zshconfig='nvim ~/.zshrc'
-alias aliases='nvim ~/.zsh_aliases'
+alias zshconfig='nvim ~/.config/zsh/.zshrc'
+alias aliases='nvim ~/.config/zsh/.zsh_aliases'
 
 # ──[ Networking & Tools ]─────────────────────────────────────────────────────
 alias ports='lsof -i -P -n'

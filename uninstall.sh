@@ -5,7 +5,7 @@
 #              Homebrew packages, and restores clean system state.
 # Author: Juan Garcia (arpatek)
 # Created: 2026-05-15
-# Version: 1.0
+# Version: 2.0
 # =============================================================================
 
 # ──[ Bash Version Check ]──────────────────────────────────────────────────────
@@ -21,9 +21,6 @@ MAC_SETUP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ──[ Shared Utilities ]────────────────────────────────────────────────────────
 source "$MAC_SETUP_DIR/lib.sh"
-
-# ──[ Error Trap ]──────────────────────────────────────────────────────────────
-trap 'printf "\n%s Uninstall failed. Aborting.\n" "$(FAILED)"' ERR
 
 # ──[ Privileged Session Caching ]──────────────────────────────────────────────
 cache_sudo
@@ -108,8 +105,6 @@ printf "%s Starting macOS Dotfiles Uninstall\n" "$(BANNER)"
 sleep 1
 
 # ── Homebrew packages ─────────────────────────────────────────────────────────
-# brew bundle cleanup removes things NOT in the Brewfile — the opposite of what
-# an uninstaller needs. Instead, parse the Brewfile and uninstall each entry.
 printf "%s Homebrew Package Removal\n" "$(BANNER)"
 sleep 0.5
 if ! command -v brew >/dev/null 2>&1; then
@@ -117,7 +112,6 @@ if ! command -v brew >/dev/null 2>&1; then
 else
   if confirm "Uninstall all packages listed in the Brewfile?"; then
     while IFS= read -r line; do
-      # Strip inline comments
       line="${line%%#*}"
       if [[ "$line" =~ ^[[:space:]]*brew[[:space:]]+\"([^\"]+)\" ]]; then
         pkg="${BASH_REMATCH[1]}"
@@ -135,14 +129,12 @@ else
       fi
     done < "$MAC_SETUP_DIR/Brewfile"
     printf "%s Brewfile packages removed\n" "$(COMPLETE)"
-    # Remove taps — only after packages are uninstalled so brew doesn't refuse
     while IFS= read -r line; do
       line="${line%%#*}"
       if [[ "$line" =~ ^[[:space:]]*tap[[:space:]]+\"([^\"]+)\" ]]; then
         brew untap "${BASH_REMATCH[1]}" 2>/dev/null \
           && printf "%s Untapped %s\n" "$(COMPLETE)" "${BASH_REMATCH[1]}" \
-          || printf "%s Could not untap %s (may still have dependents)\n" \
-               "$(PLUS)" "${BASH_REMATCH[1]}"
+          || printf "%s Could not untap %s\n" "$(PLUS)" "${BASH_REMATCH[1]}"
       fi
     done < "$MAC_SETUP_DIR/Brewfile"
   else
@@ -151,6 +143,12 @@ else
 fi
 printf "\n"
 sleep 1
+
+# ── Zsh plugins ───────────────────────────────────────────────────────────────
+printf "%s Removing Zsh plugins\n" "$(BANNER)"
+sleep 0.5
+remove_dir "$HOME/.config/zsh/plugins" "~/.config/zsh/plugins"
+printf "\n"
 
 # ── LazyVim / Neovim config ───────────────────────────────────────────────────
 printf "%s Removing LazyVim / Neovim config\n" "$(BANNER)"
@@ -167,16 +165,6 @@ sleep 1
 printf "%s Removing pyenv\n" "$(BANNER)"
 sleep 0.5
 remove_dir "$HOME/.pyenv" "~/.pyenv"
-printf "\n"
-sleep 1
-
-# ── zinit ─────────────────────────────────────────────────────────────────────
-printf "%s Removing zinit\n" "$(BANNER)"
-sleep 0.5
-# Remove both possible install locations — new installs use ~/.local/share/zinit,
-# older installs may still be at ~/.zinit
-remove_dir "$HOME/.local/share/zinit" "~/.local/share/zinit"
-remove_dir "$HOME/.zinit"             "~/.zinit (legacy location)"
 printf "\n"
 sleep 1
 
@@ -198,21 +186,22 @@ printf "\n"
 # ── Dotfile symlinks — last so PATH stays intact throughout ──────────────────
 printf "%s Removing Dotfile Symlinks\n" "$(BANNER)"
 sleep 0.5
-unlink_file ~/.zsh/themes/arpatek.zsh-theme
-unlink_file ~/.tmux.conf
-unlink_file ~/.gitconfig
-unlink_file ~/.vimrc
-unlink_file ~/.git-commit-template
-unlink_file ~/.editorconfig
-unlink_file ~/.curlrc
+unlink_file ~/.config/tmux/tmux.conf
+unlink_file ~/.config/git/config
+unlink_file ~/.config/git/commit-template
+unlink_file ~/.config/starship.toml
+unlink_file ~/.config/curlrc
 unlink_file ~/.config/lazygit/config.yml
 unlink_file ~/.config/zed/settings.json
+unlink_file ~/.vim/vimrc
+unlink_file ~/.editorconfig
 unlink_file ~/.aerospace.toml
 remove_file "$HOME/.config/iterm2/arpatek.itermcolors"
-unlink_file ~/.zsh_aliases
-unlink_file ~/.zprofile
-unlink_file ~/.zshrc
-remove_dir "$HOME/.zsh" "~/.zsh"
+unlink_file ~/.config/zsh/.zsh_aliases
+unlink_file ~/.config/zsh/.zprofile
+unlink_file ~/.config/zsh/.zshrc
+unlink_file ~/.zshenv
+remove_dir "$HOME/.config/zsh" "~/.config/zsh"
 printf "\n"
 sleep 1
 
@@ -234,3 +223,5 @@ if (( ERRORS > 0 )); then
 else
   printf "%s Uninstall Complete — system restored to clean state\n" "$(COMPLETE)"
 fi
+
+exec zsh

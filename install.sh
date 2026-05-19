@@ -5,7 +5,7 @@
 #              packages via Brewfile, and symlinks dotfiles into place.
 # Author: Juan Garcia (arpatek)
 # Created: 2026-05-15
-# Version: 1.0
+# Version: 2.0
 # =============================================================================
 
 # ──[ Bash Bootstrap ]──────────────────────────────────────────────────────────
@@ -103,7 +103,6 @@ bootstrap_xcode() {
   fi
   printf "%s Installing Xcode Command Line Tools...\n" "$(PLUS)"
   xcode-select --install
-  # Block until the install completes
   until xcode-select -p &>/dev/null; do sleep 5; done
   printf "%s Xcode Command Line Tools installed\n" "$(COMPLETE)"
 }
@@ -115,7 +114,6 @@ bootstrap_homebrew() {
   fi
   printf "%s Installing Homebrew...\n" "$(PLUS)"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  # Add Homebrew to PATH for the remainder of this script
   if [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
   elif [[ -x /usr/local/bin/brew ]]; then
@@ -130,16 +128,27 @@ bootstrap_packages() {
   printf "%s Brewfile packages installed\n" "$(COMPLETE)"
 }
 
-bootstrap_zinit() {
-  if [[ -f "$HOME/.local/share/zinit/zinit.git/zinit.zsh" ]]; then
-    printf "%s zinit already installed\n" "$(COMPLETE)"
-    return
-  fi
-  printf "%s Installing zinit...\n" "$(PLUS)"
-  # NO_INPUT=1 suppresses the post-install prompt about annexes — they are
-  # already declared in .zshrc so there is nothing extra to set up
-  NO_INPUT=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
-  printf "%s zinit installed\n" "$(COMPLETE)"
+bootstrap_zsh_plugins() {
+  local plugins_dir="$HOME/.config/zsh/plugins"
+  mkdir -p "$plugins_dir"
+
+  declare -A PLUGINS=(
+    [zsh-autosuggestions]="https://github.com/zsh-users/zsh-autosuggestions"
+    [zsh-completions]="https://github.com/zsh-users/zsh-completions"
+    [zsh-history-substring-search]="https://github.com/zsh-users/zsh-history-substring-search"
+    [fast-syntax-highlighting]="https://github.com/zdharma-continuum/fast-syntax-highlighting"
+  )
+
+  local plugin
+  for plugin in "${!PLUGINS[@]}"; do
+    if [[ -d "${plugins_dir}/${plugin}" ]]; then
+      printf "%s %s already installed\n" "$(COMPLETE)" "$plugin"
+    else
+      printf "%s Installing %s...\n" "$(PLUS)" "$plugin"
+      git clone --depth 1 "${PLUGINS[$plugin]}" "${plugins_dir}/${plugin}"
+      printf "%s %s installed\n" "$(COMPLETE)" "$plugin"
+    fi
+  done
 }
 
 bootstrap_lazyvim() {
@@ -184,16 +193,19 @@ if ! $SKIP_PACKAGES; then
   bootstrap_xcode
   bootstrap_homebrew
   bootstrap_packages
-  bootstrap_zinit
+  bootstrap_zsh_plugins
   bootstrap_lazyvim
   printf "\n"
 fi
 
 printf "%s Creating Directories\n" "$(BANNER)"
 sleep 0.5
-mkdir -p ~/.zsh/themes
+mkdir -p ~/.config/zsh
+mkdir -p ~/.config/git
+mkdir -p ~/.config/tmux
 mkdir -p ~/.config/lazygit
 mkdir -p ~/.config/zed
+mkdir -p ~/.vim
 mkdir -p ~/.ssh/
 printf "%s Directories ready\n\n" "$(COMPLETE)"
 sleep 1
@@ -203,42 +215,46 @@ sleep 0.5
 
 printf "%s Shell\n" "$(BANNER)"
 sleep 0.2
-link "$MAC_SETUP_DIR/.zshrc"                              ~/.zshrc
+link "$MAC_SETUP_DIR/.zshenv"                              ~/.zshenv
 sleep 0.2
-link "$MAC_SETUP_DIR/.zprofile"                           ~/.zprofile
+link "$MAC_SETUP_DIR/.config/zsh/.zshrc"                   ~/.config/zsh/.zshrc
 sleep 0.2
-link "$MAC_SETUP_DIR/.zsh_aliases"                        ~/.zsh_aliases
+link "$MAC_SETUP_DIR/.config/zsh/.zprofile"                ~/.config/zsh/.zprofile
 sleep 0.2
-link "$MAC_SETUP_DIR/.zsh/themes/arpatek.zsh-theme"       ~/.zsh/themes/arpatek.zsh-theme
+link "$MAC_SETUP_DIR/.config/zsh/.zsh_aliases"             ~/.config/zsh/.zsh_aliases
+printf "\n"
+
+printf "%s Prompt\n" "$(BANNER)"
+sleep 0.2
+link "$MAC_SETUP_DIR/.config/starship.toml"                ~/.config/starship.toml
 printf "\n"
 
 printf "%s Terminal & Editor\n" "$(BANNER)"
 sleep 0.2
-link "$MAC_SETUP_DIR/.tmux.conf"                          ~/.tmux.conf
+link "$MAC_SETUP_DIR/.config/tmux/tmux.conf"               ~/.config/tmux/tmux.conf
 sleep 0.2
-link "$MAC_SETUP_DIR/.vimrc"                              ~/.vimrc
+link "$MAC_SETUP_DIR/.config/vim/vimrc"                    ~/.vim/vimrc
 sleep 0.2
-link "$MAC_SETUP_DIR/.git-commit-template"                ~/.git-commit-template
+link "$MAC_SETUP_DIR/.editorconfig"                        ~/.editorconfig
 sleep 0.2
-link "$MAC_SETUP_DIR/.editorconfig"                       ~/.editorconfig
-sleep 0.2
-link "$MAC_SETUP_DIR/.config/zed/settings.json"           ~/.config/zed/settings.json
+link "$MAC_SETUP_DIR/.config/zed/settings.json"            ~/.config/zed/settings.json
 printf "\n"
 
 printf "%s Tools & System\n" "$(BANNER)"
 sleep 0.2
-link "$MAC_SETUP_DIR/.gitconfig"                          ~/.gitconfig
+link "$MAC_SETUP_DIR/.config/git/config"                   ~/.config/git/config
 sleep 0.2
-link "$MAC_SETUP_DIR/.curlrc"                             ~/.curlrc
+link "$MAC_SETUP_DIR/.config/git/commit-template"          ~/.config/git/commit-template
 sleep 0.2
-link "$MAC_SETUP_DIR/.config/lazygit/config.yml"          ~/.config/lazygit/config.yml
+link "$MAC_SETUP_DIR/.config/curlrc"                       ~/.config/curlrc
 sleep 0.2
-link "$MAC_SETUP_DIR/.aerospace.toml"                     ~/.aerospace.toml
+link "$MAC_SETUP_DIR/.config/lazygit/config.yml"           ~/.config/lazygit/config.yml
+sleep 0.2
+link "$MAC_SETUP_DIR/.aerospace.toml"                      ~/.aerospace.toml
 printf "\n"
 
 printf "%s iTerm2\n" "$(BANNER)"
 sleep 0.2
-# Copied rather than symlinked — iTerm2 imports colors internally
 mkdir -p ~/.config/iterm2
 cp "$MAC_SETUP_DIR/.config/iterm2/arpatek.itermcolors" \
    ~/.config/iterm2/arpatek.itermcolors
@@ -256,7 +272,6 @@ sleep 1
 
 printf "%s Installing mpu\n" "$(BANNER)"
 sleep 0.5
-# Homebrew manages /usr/local/bin on Intel; /opt/homebrew/bin on Apple Silicon
 MPU_DEST="$(brew --prefix)/bin/mpu"
 ln -sf "$MAC_SETUP_DIR/mpu" "$MPU_DEST"
 printf "%s mpu installed to %s\n\n" "$(COMPLETE)" "$MPU_DEST"
