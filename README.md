@@ -11,27 +11,28 @@ Personal macOS dotfiles and bootstrap installer — installs all tools via Homeb
 | File | Description |
 |---|---|
 | `lib.sh` | Shared utilities — colors, decoration functions, `cache_sudo` |
-| `install.sh` | Full bootstrap — Homebrew, Brewfile, zinit, LazyVim, symlinks |
+| `install.sh` | Full bootstrap — Homebrew, Brewfile, zsh plugins, LazyVim, symlinks |
 | `uninstall.sh` | Full cleanup — removes all packages, symlinks, and environments |
 | `mpu` | Mac Package Updater — updates Homebrew formulae, casks, and cleans up |
 | `ipkg` | Interactive Homebrew browser — fuzzy-find to install or remove formulae and casks |
 | `Brewfile` | Declarative package list for all formulae, casks, and App Store apps |
-| `.zshrc` | Zsh config — Zinit, fzf, zoxide, pyenv, Go, plugins |
-| `.zprofile` | Login shell env — Homebrew PATH, pyenv, Go |
-| `.zsh_aliases` | Aliases for navigation, git, SSH, networking, and macOS utilities |
-| `.zsh/themes/arpatek.zsh-theme` | Custom two-line Zsh prompt with git status |
-| `.tmux.conf` | tmux — truecolor, vi copy mode with pbcopy, 50k scrollback |
-| `.gitconfig` | Git config — aliases, editor, fetch prune, autosquash, colorMoved |
-| `.git-commit-template` | Conventional commit template |
-| `.vimrc` | Minimal Vim config for CLI workflows |
+| `.zshenv` | Sets `ZDOTDIR` so zsh finds all config under `~/.config/zsh/` |
+| `.config/zsh/.zshrc` | Zsh config — plugins, fzf, zoxide, pyenv, Go, starship |
+| `.config/zsh/.zprofile` | Login shell env — Homebrew PATH, pyenv, Go |
+| `.config/zsh/.zsh_aliases` | Aliases for navigation, git, SSH, networking, and macOS utilities |
+| `.config/starship.toml` | Starship prompt — catppuccin macchiato palette, two-line with OS icon, git, path |
+| `.config/git/config` | Git config — aliases, editor, fetch prune, autosquash, colorMoved |
+| `.config/git/commit-template` | Conventional commit template |
+| `.config/vim/vimrc` | Minimal Vim config for CLI workflows |
+| `.config/tmux/tmux.conf` | tmux — truecolor, vi copy mode with pbcopy, 50k scrollback |
 | `.config/nvim/init.vim` | Neovim fallback config for nvim < 0.9 |
-| `.ssh/config` | SSH — global ControlMaster defaults and connection templates |
-| `.editorconfig` | Universal indent/charset rules for all editors |
-| `.curlrc` | curl defaults — follow redirects, retry, fail-fast |
-| `.aerospace.toml` | AeroSpace tiling window manager config |
+| `.config/curlrc` | curl defaults — follow redirects, retry, fail-fast |
 | `.config/lazygit/config.yml` | lazygit catppuccin mocha theme |
 | `.config/zed/settings.json` | Zed editor settings |
 | `.config/iterm2/arpatek.itermcolors` | iTerm2 color scheme |
+| `.aerospace.toml` | AeroSpace tiling window manager config |
+| `.editorconfig` | Universal indent/charset rules for all editors |
+| `.ssh/config` | SSH — global ControlMaster defaults and connection templates |
 | `.gitignore` | Repo-level ignores |
 
 ---
@@ -51,9 +52,10 @@ The installer will:
 - Install Xcode Command Line Tools if missing
 - Install Homebrew if missing
 - Install all packages from the Brewfile (formulae, casks, App Store apps)
-- Bootstrap zinit and LazyVim
-- Symlink all dotfiles into place
-- Install mpu to `$(brew --prefix)/bin`
+- Clone zsh plugins directly — no plugin manager needed
+- Clone the LazyVim starter (requires nvim ≥ 0.9; falls back to `init.vim`)
+- Symlink all dotfiles into place under `~/.config/`
+- Install mpu and ipkg to `$(brew --prefix)/bin`
 - Launch zsh on completion
 
 **To skip package installation** (re-link only):
@@ -68,10 +70,24 @@ The installer will:
 ./uninstall.sh
 ```
 
-Uninstalls all Brewfile packages, removes symlinks, pyenv, zinit, and LazyVim.
+Uninstalls all Brewfile packages, removes symlinks, plugins, pyenv, and LazyVim.
 
 > **Note:** After install, import the iTerm2 color scheme manually:
 > iTerm2 → Settings → Profiles → Colors → Color Presets → Import → `~/.config/iterm2/arpatek.itermcolors`
+
+---
+
+## Home Directory Layout
+
+All shell and tool config lives under `~/.config/` (XDG-compliant). The only files
+installed directly to `$HOME` are:
+
+| File | Why it must stay in `$HOME` |
+|---|---|
+| `~/.zshenv` | Sets `ZDOTDIR` — zsh reads this before any other file |
+| `~/.editorconfig` | EditorConfig walks up from the project root, falls back to `$HOME` |
+| `~/.ssh/` | SSH has no XDG support |
+| `~/.aerospace.toml` | AeroSpace requires config at `$HOME/.aerospace.toml` |
 
 ---
 
@@ -95,10 +111,10 @@ Options:
 
 | Category | Packages |
 |---|---|
-| Shell | bash, zsh, tmux |
+| Shell | bash, zsh, tmux, starship |
 | Core CLI | git, curl, wget, aria2, tree, nmap, make, gcc, grep |
 | Modern CLI | bat, eza, fastfetch, btop, ncdu, fzf, zoxide, lazygit, yazi, lynx, shellcheck, shfmt, asciinema, asciiquarium |
-| Dev | go, node, deno, pyenv, docker, neovim, shellcheck, shfmt |
+| Dev | go, node, deno, pyenv, docker, neovim |
 | Network | cloudflared, mole, wireguard-tools |
 | Media | ffmpeg, yt-dlp |
 
@@ -126,12 +142,15 @@ Hidden Bar · Codye · WireGuard · Wipr 2 · Amphetamine · CleanMyMac
 
 | Feature | Detail |
 |---|---|
-| Plugin manager | Zinit with lazy loading and annexes |
+| No plugin manager | Plugins cloned to `~/.config/zsh/plugins/` by the installer |
 | Syntax highlighting | `fast-syntax-highlighting` — faster than zsh-syntax-highlighting |
 | Autosuggestions | History-first with completion fallback, 20-char buffer cap |
-| Completions | `zsh-completions` with 24-hour compinit dump cache |
+| History substring search | Type any part of a past command, Up/Down cycles all matches |
+| Completions | `zsh-completions` with 24-hour compinit dump cache in `~/.cache/zsh/` |
 | Fuzzy finder | fzf — `Ctrl+R` history, `Ctrl+T` file picker, `Alt+C` fuzzy cd |
 | Smart jump | zoxide — `z <query>` jumps to most-frecent directory, `zi` interactive |
+| Prompt | Starship — catppuccin macchiato, two-line with OS icon, user@host, path, git |
+| Vi mode toggle | Double `Esc` enters vi command mode, double `Esc` again returns to emacs |
 | History | 50,000 entries, all-duplicates removed, timestamps, shared across sessions |
 | `AUTO_CD` | Type a directory name to navigate without `cd` |
 | `GLOB_DOTS` | Glob patterns include dotfiles without `.*` |
@@ -213,3 +232,5 @@ ssh-keygen -t ed25519 -f ~/.ssh/netrunner-rpi.key  -C "netrunner | $(hostname)" 
 ssh-keygen -t ed25519 -f ~/.ssh/dev-rhel-0.key     -C "rhel-0 | $(hostname)"   -N ""
 ssh-keygen -t ed25519 -f ~/.ssh/dev-ubuntu-0.key   -C "ubuntu-0 | $(hostname)" -N ""
 ```
+
+Add the `.pub` files to their respective services and `authorized_keys` files.
