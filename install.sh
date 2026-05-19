@@ -205,6 +205,7 @@ mkdir -p ~/.config/git
 mkdir -p ~/.config/tmux
 mkdir -p ~/.config/lazygit
 mkdir -p ~/.config/zed
+mkdir -p ~/.config/fastfetch
 mkdir -p ~/.vim
 mkdir -p ~/.ssh/
 printf "%s Directories ready\n\n" "$(COMPLETE)"
@@ -249,6 +250,8 @@ sleep 0.2
 link "$MAC_SETUP_DIR/.config/curlrc"                       ~/.config/curlrc
 sleep 0.2
 link "$MAC_SETUP_DIR/.config/lazygit/config.yml"           ~/.config/lazygit/config.yml
+sleep 0.2
+link "$MAC_SETUP_DIR/.config/fastfetch/config.jsonc"       ~/.config/fastfetch/config.jsonc
 sleep 0.2
 link "$MAC_SETUP_DIR/.aerospace.toml"                      ~/.aerospace.toml
 printf "\n"
