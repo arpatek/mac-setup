@@ -10,6 +10,7 @@ tap "waydabber/betterdisplay"
 brew "bash"           # bash 4+ required by dotfiles scripts
 brew "zsh"
 brew "tmux"
+brew "starship"
 
 # ──[ Core CLI ]────────────────────────────────────────────────────────────────
 brew "git"

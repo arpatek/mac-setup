@@ -58,6 +58,7 @@ fi
 
 fzf_args=(
   --height 100%
+  --layout=reverse
   --multi
   --prompt '[INSTALL] formula > '
   --header "alt+c: install-cask | alt+r: remove-formula | alt+x: remove-cask | tab: select"
