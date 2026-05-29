@@ -78,7 +78,7 @@ confirm() {
 
 # ──[ Restore Backups ]─────────────────────────────────────────────────────────
 restore_backups() {
-  local backup_base="$HOME/.dotfiles_backup"
+  local backup_base="$HOME/.local/share/dotfiles_backup"
   if [[ ! -d "$backup_base" ]]; then
     printf "%s No backup directory found\n" "$(PLUS)"
     return
@@ -164,7 +164,7 @@ sleep 1
 # ── pyenv ─────────────────────────────────────────────────────────────────────
 printf "%s Removing pyenv\n" "$(BANNER)"
 sleep 0.5
-remove_dir "$HOME/.pyenv" "~/.pyenv"
+remove_dir "$HOME/.local/share/pyenv" "~/.local/share/pyenv"
 printf "\n"
 sleep 1
 
@@ -206,14 +206,14 @@ printf "\n"
 sleep 1
 
 # ── Backups ───────────────────────────────────────────────────────────────────
-if confirm "Restore pre-install backups from ~/.dotfiles_backup?"; then
+if confirm "Restore pre-install backups from ~/.local/share/dotfiles_backup?"; then
   printf "\n"
   restore_backups
   printf "\n"
 fi
 
-if confirm "Delete ~/.dotfiles_backup?"; then
-  remove_dir "$HOME/.dotfiles_backup" "~/.dotfiles_backup"
+if confirm "Delete ~/.local/share/dotfiles_backup?"; then
+  remove_dir "$HOME/.local/share/dotfiles_backup" "~/.local/share/dotfiles_backup"
   printf "\n"
 fi
 
