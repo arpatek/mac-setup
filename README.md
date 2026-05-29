@@ -24,7 +24,7 @@ Personal macOS dotfiles and bootstrap installer — installs all tools via Homeb
 | `.config/git/config` | Git config — aliases, editor, fetch prune, autosquash, colorMoved |
 | `.config/git/commit-template` | Conventional commit template |
 | `.config/vim/vimrc` | Minimal Vim config for CLI workflows |
-| `.config/tmux/tmux.conf` | tmux — truecolor, vi copy mode with pbcopy, 50k scrollback |
+| `.config/tmux/tmux.conf` | tmux — truecolor, vi copy mode with pbcopy, 50k scrollback, tokyo-night theme |
 | `.config/nvim/init.vim` | Neovim fallback config for nvim < 0.9 |
 | `.config/curlrc` | curl defaults — follow redirects, retry, fail-fast |
 | `.config/lazygit/config.yml` | lazygit catppuccin mocha theme |
@@ -162,7 +162,7 @@ Hidden Bar · Codye · WireGuard · Wipr 2 · Amphetamine · CleanMyMac
 
 | Alias | Command |
 |---|---|
-| `la` / `ll` / `lll` / `ltree` | eza file listings with icons and git status |
+| `ls` / `ll` / `lll` / `tree` | eza file listings with icons and git status |
 | `cat` | `bat --plain` — syntax-highlighted drop-in replacement |
 | `bcat` | `bat` — full bat with line numbers, highlighting, and pager |
 | `grep` | `ggrep --color=auto` — GNU grep with `-P` Perl regex support |
@@ -204,6 +204,18 @@ Hidden Bar · Codye · WireGuard · Wipr 2 · Amphetamine · CleanMyMac
 | `Alt+b` | Open Zen browser |
 | `Alt+c` | Open VSCode |
 | `Alt+Shift+;` | Enter service mode |
+
+---
+
+## tmux Theme
+
+Uses [tokyo-night-tmux](https://github.com/janoamaral/tokyo-night-tmux). Clone it manually — it is not managed by the installer:
+
+```bash
+git clone https://github.com/janoamaral/tokyo-night-tmux ~/.config/tmux/plugins/tokyo-night-tmux
+```
+
+Enabled widgets: git status, battery, network speed, now playing, current path, hostname.
 
 ---
 
