@@ -206,6 +206,10 @@ mkdir -p ~/.config/tmux
 mkdir -p ~/.config/lazygit
 mkdir -p ~/.config/zed
 mkdir -p ~/.config/fastfetch
+mkdir -p ~/.config/kube
+mkdir -p ~/.config/npm
+mkdir -p ~/.cache/kube
+mkdir -p ~/.cache/npm
 mkdir -p ~/.vim
 mkdir -p ~/.ssh/
 printf "%s Directories ready\n\n" "$(COMPLETE)"
