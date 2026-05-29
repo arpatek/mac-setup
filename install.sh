@@ -39,7 +39,7 @@ set -eo pipefail
 
 # ──[ Paths ]───────────────────────────────────────────────────────────────────
 MAC_SETUP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+BACKUP_DIR="$HOME/.local/share/dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
 
 # ──[ Shared Utilities ]────────────────────────────────────────────────────────
 source "$MAC_SETUP_DIR/lib.sh"
