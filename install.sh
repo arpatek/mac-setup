@@ -275,8 +275,8 @@ sleep 1
 
 printf "%s Installing SSH Config\n" "$(BANNER)"
 sleep 0.5
-chmod 600 "$MAC_SETUP_DIR/.ssh/config"
-link "$MAC_SETUP_DIR/.ssh/config" ~/.ssh/config
+cp "$MAC_SETUP_DIR/.ssh/config" ~/.ssh/config
+chmod 600 ~/.ssh/config
 printf "%s SSH config installed\n\n" "$(COMPLETE)"
 sleep 1
 
