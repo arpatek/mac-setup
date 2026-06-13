@@ -216,6 +216,7 @@ mkdir -p ~/.cache/kube
 mkdir -p ~/.cache/npm
 mkdir -p ~/.vim
 mkdir -p ~/.ssh/
+mkdir -p ~/.claude
 printf "%s Directories ready\n\n" "$(COMPLETE)"
 sleep 1
 
@@ -262,6 +263,8 @@ sleep 0.2
 link "$MAC_SETUP_DIR/.config/fastfetch/config.jsonc"       ~/.config/fastfetch/config.jsonc
 sleep 0.2
 link "$MAC_SETUP_DIR/.aerospace.toml"                      ~/.aerospace.toml
+sleep 0.2
+link "$MAC_SETUP_DIR/.claude/statusline-command.sh"        ~/.claude/statusline-command.sh
 printf "\n"
 
 printf "%s iTerm2\n" "$(BANNER)"
