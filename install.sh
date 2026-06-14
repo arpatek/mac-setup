@@ -161,17 +161,6 @@ bootstrap_lazyvim() {
     return
   fi
 
-  local nvim_ver nvim_minor
-  nvim_ver=$(nvim --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
-  nvim_minor=${nvim_ver##*.}
-
-  if (( ${nvim_ver%%.*} == 0 && nvim_minor < 9 )); then
-    printf "%s nvim %s < 0.9 — linking init.vim fallback\n" "$(PLUS)" "$nvim_ver"
-    mkdir -p "$HOME/.config/nvim"
-    link "$MAC_SETUP_DIR/.config/nvim/init.vim" "$HOME/.config/nvim/init.vim"
-    return
-  fi
-
   if [[ -d "$HOME/.config/nvim" && -n "$(ls -A "$HOME/.config/nvim" 2>/dev/null)" ]]; then
     printf "%s ~/.config/nvim already populated — skipping LazyVim install\n" "$(PLUS)"
     return
