@@ -1,8 +1,14 @@
 # mac-setup
 
-Personal macOS dotfiles and bootstrap installer — installs all tools via Homebrew, symlinks configs, and sets up a full development environment from scratch.
+> ## Archived — merged into [arpatek/dotfiles](https://codeberg.org/arpatek/dotfiles)
+>
+> This repository is **read-only**. macOS setup now lives in
+> **[arpatek/dotfiles](https://codeberg.org/arpatek/dotfiles)** — a single
+> cross-platform (Linux + macOS) dotfiles repo. The Mac bootstrap is under
+> `os/darwin.sh` and `.config/zsh/os.d/darwin.zsh` (Brewfile, AeroSpace, iTerm2,
+> Zed, `mpu`, `ipkg-macos`). Kept here as read-only history.
 
-> Linux dotfiles live in a separate repo: [dotfiles](https://codeberg.org/arpatek/dotfiles)
+Personal macOS dotfiles and bootstrap installer — installs all tools via Homebrew, symlinks configs, and sets up a full development environment from scratch.
 
 ---
 
